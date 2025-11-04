@@ -1,9 +1,9 @@
 import { pool } from "../config/db.js";
 
-export const criarDemanda = async (titulo, descricao, bairro, latitude, longitude, usuario_id) => {
+export const criarDemanda = async (titulo, descricao, bairro, estado, cidade, latitude, longitude, usuario_id) => {
   const result = await pool.query(
-    "INSERT INTO demandas (titulo, descricao, bairro, latitude, longitude, usuario_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-    [titulo, descricao, bairro, latitude, longitude, usuario_id]
+    "INSERT INTO demandas (titulo, descricao, bairro, estado, cidade, latitude, longitude, usuario_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
+    [titulo, descricao, bairro, estado, cidade, latitude, longitude, usuario_id]
   );
   return result.rows[0];
 };

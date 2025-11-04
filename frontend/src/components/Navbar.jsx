@@ -33,6 +33,18 @@ export default function Navbar() {
           <span style={{ fontWeight: "700", fontSize: "1.25rem", color: "var(--text)" }}>CleanWork</span>
         </Link>
         <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+          <Link to="/obras" style={{
+            color: "var(--text)",
+            textDecoration: "none",
+            padding: "0.5rem 1rem",
+            borderRadius: "6px",
+            transition: "background 0.2s"
+          }}
+          onMouseEnter={(e) => e.target.style.background = "var(--bg)"}
+          onMouseLeave={(e) => e.target.style.background = "transparent"}
+          >
+            Obras
+          </Link>
           <Link to="/dashboard" style={{
             color: "var(--text)",
             textDecoration: "none",

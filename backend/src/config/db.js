@@ -1,13 +1,9 @@
 import pkg from "pg";
 const { Pool } = pkg;
-import dotenv from "dotenv";
-
-dotenv.config();
 
 export const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASS,
-  port: process.env.DB_PORT,
+  connectionString: "postgresql://postgres:cleanwork7.@cxppkhiirfkwzhoouglo.supabase.co:5432/postgres",
+  ssl: { rejectUnauthorized: false },
+  connectionTimeoutMillis: 10000,
+  query_timeout: 10000
 });

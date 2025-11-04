@@ -11,8 +11,8 @@ export const getDemandas = async (req, res) => {
 
 export const postDemanda = async (req, res) => {
   try {
-    const { titulo, descricao, bairro, latitude, longitude, usuario_id } = req.body;
-    const nova = await criarDemanda(titulo, descricao, bairro, latitude, longitude, usuario_id);
+    const { titulo, descricao, bairro, estado, cidade, latitude, longitude, usuario_id } = req.body;
+    const nova = await criarDemanda(titulo, descricao, bairro, estado, cidade, latitude, longitude, usuario_id);
     res.status(201).json(nova);
   } catch (error) {
     res.status(500).json({ message: "Erro ao criar demanda", error });
