@@ -45,30 +45,6 @@ export default function Navbar() {
           >
             Obras
           </Link>
-          <Link to="/dashboard" style={{
-            color: "var(--text)",
-            textDecoration: "none",
-            padding: "0.5rem 1rem",
-            borderRadius: "6px",
-            transition: "background 0.2s"
-          }}
-          onMouseEnter={(e) => e.target.style.background = "var(--bg)"}
-          onMouseLeave={(e) => e.target.style.background = "transparent"}
-          >
-            Dashboard
-          </Link>
-          <Link to="/login" style={{
-            color: "var(--text)",
-            textDecoration: "none",
-            padding: "0.5rem 1rem",
-            borderRadius: "6px",
-            transition: "background 0.2s"
-          }}
-          onMouseEnter={(e) => e.target.style.background = "var(--bg)"}
-          onMouseLeave={(e) => e.target.style.background = "transparent"}
-          >
-            Entrar
-          </Link>
           <button
             onClick={toggleTheme}
             style={{

@@ -1,14 +1,12 @@
-import React from "react";
-import Navbar from "../components/Navbar";
+import React from 'react';
 
-export default function Dashboard() {
+const Dashboard = () => {
   return (
-    <div className="app-container">
-      <Navbar />
-      <main className="main-content">
-        <h2>Dashboard da Prefeitura</h2>
-        <p>Aqui serão mostrados os filtros por bairro, prioridade e resumo das demandas.</p>
-      </main>
+    <div>
+      <h1>Dashboard</h1>
+      <p>Bem-vindo ao painel de controle.</p>
     </div>
   );
-}
+};
+
+export default Dashboard;

@@ -1,27 +1,32 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const Register = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Verificar credenciais admin
-    if (username === 'cleanwork' && password === 'cleanwork7') {
-      // Login admin bem-sucedido, redirecionar para /home
-      navigate('/home');
-    } else {
-      // Verificar usuários cadastrados
+    if (password !== confirmPassword) {
+      setError('As senhas não coincidem.');
+      return;
+    }
+    if (username && password) {
+      // Simulação de cadastro - armazenar no localStorage
       const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.username === username && u.password === password);
-      if (user) {
-        navigate('/home');
-      } else {
-        setError('Credenciais inválidas. Tente novamente.');
+      if (users.find(u => u.username === username)) {
+        setError('Usuário já existe.');
+        return;
       }
+      users.push({ username, password });
+      localStorage.setItem('users', JSON.stringify(users));
+      alert('Cadastro realizado com sucesso! Faça login.');
+      navigate('/');
+    } else {
+      setError('Preencha todos os campos.');
     }
   };
 
@@ -47,7 +52,7 @@ const Login = () => {
           marginBottom: '1.5rem',
           color: 'var(--text)'
         }}>
-          Login Admin
+          Cadastro de Usuário
         </h1>
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: '1rem' }}>
@@ -98,6 +103,30 @@ const Login = () => {
               required
             />
           </div>
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{
+              display: 'block',
+              marginBottom: '0.5rem',
+              color: 'var(--text)'
+            }}>
+              Confirmar Senha:
+            </label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid var(--border)',
+                borderRadius: '4px',
+                background: 'var(--bg)',
+                color: 'var(--text)',
+                boxSizing: 'border-box'
+              }}
+              required
+            />
+          </div>
           {error && (
             <p style={{
               color: '#e53e3e',
@@ -112,7 +141,7 @@ const Login = () => {
             style={{
               width: '100%',
               padding: '0.75rem',
-              background: '#007bff',
+              background: '#28a745',
               color: 'white',
               border: 'none',
               borderRadius: '4px',
@@ -121,11 +150,11 @@ const Login = () => {
               marginBottom: '1rem'
             }}
           >
-            Entrar
+            Cadastrar
           </button>
           <button
             type="button"
-            onClick={() => navigate('/register')}
+            onClick={() => navigate('/')}
             style={{
               width: '100%',
               padding: '0.75rem',
@@ -137,7 +166,7 @@ const Login = () => {
               fontSize: '1rem'
             }}
           >
-            Cadastrar Usuário
+            Voltar ao Login
           </button>
         </form>
       </div>
@@ -145,4 +174,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
