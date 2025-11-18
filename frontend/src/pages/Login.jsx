@@ -31,30 +31,50 @@ const Login = () => {
       justifyContent: 'center',
       alignItems: 'center',
       height: '100vh',
-      background: 'var(--bg)',
-      color: 'var(--text)'
+      background: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url("/obra.jpg")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
+      color: 'var(--text)',
+      position: 'relative',
+      overflow: 'hidden'
     }}>
+      {/* Overlay escuro para melhor legibilidade */}
       <div style={{
-        background: 'var(--card-bg)',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        pointerEvents: 'none'
+      }}></div>
+
+      <div style={{
+        background: 'rgba(255, 255, 255, 0.97)',
         padding: '2rem',
-        borderRadius: '8px',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+        borderRadius: '16px',
+        boxShadow: '0 25px 50px rgba(0,0,0,0.4)',
         width: '100%',
-        maxWidth: '400px'
+        maxWidth: '400px',
+        backdropFilter: 'blur(10px)',
+        position: 'relative',
+        zIndex: 1
       }}>
         <h1 style={{
           textAlign: 'center',
           marginBottom: '1.5rem',
-          color: 'var(--text)'
+          color: '#1a202c',
+          fontWeight: 'bold'
         }}>
-          Login Admin
+          Login
         </h1>
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: '1rem' }}>
             <label style={{
               display: 'block',
               marginBottom: '0.5rem',
-              color: 'var(--text)'
+              color: '#1a202c',
+              fontWeight: '600'
             }}>
               Usuário:
             </label>
@@ -65,10 +85,10 @@ const Login = () => {
               style={{
                 width: '100%',
                 padding: '0.75rem',
-                border: '1px solid var(--border)',
+                border: '1px solid #cbd5e0',
                 borderRadius: '4px',
-                background: 'var(--bg)',
-                color: 'var(--text)',
+                background: '#ffffff',
+                color: '#1a202c',
                 boxSizing: 'border-box'
               }}
               required
@@ -78,7 +98,8 @@ const Login = () => {
             <label style={{
               display: 'block',
               marginBottom: '0.5rem',
-              color: 'var(--text)'
+              color: '#1a202c',
+              fontWeight: '600'
             }}>
               Senha:
             </label>
@@ -89,10 +110,10 @@ const Login = () => {
               style={{
                 width: '100%',
                 padding: '0.75rem',
-                border: '1px solid var(--border)',
+                border: '1px solid #cbd5e0',
                 borderRadius: '4px',
-                background: 'var(--bg)',
-                color: 'var(--text)',
+                background: '#ffffff',
+                color: '#1a202c',
                 boxSizing: 'border-box'
               }}
               required
@@ -112,13 +133,14 @@ const Login = () => {
             style={{
               width: '100%',
               padding: '0.75rem',
-              background: '#007bff',
+              background: '#0056cc',
               color: 'white',
               border: 'none',
               borderRadius: '4px',
               cursor: 'pointer',
               fontSize: '1rem',
-              marginBottom: '1rem'
+              marginBottom: '1rem',
+              fontWeight: '600'
             }}
           >
             Entrar
@@ -129,12 +151,13 @@ const Login = () => {
             style={{
               width: '100%',
               padding: '0.75rem',
-              background: 'transparent',
-              color: 'var(--text)',
-              border: '1px solid var(--border)',
+              background: '#ffffff',
+              color: '#0056cc',
+              border: '2px solid #0056cc',
               borderRadius: '4px',
               cursor: 'pointer',
-              fontSize: '1rem'
+              fontSize: '1rem',
+              fontWeight: '600'
             }}
           >
             Cadastrar Usuário
