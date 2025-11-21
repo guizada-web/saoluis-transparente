@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api.js';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -8,25 +9,18 @@ const Register = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setError('As senhas não coincidem.');
       return;
     }
-    if (username && password) {
-      // Simulação de cadastro - armazenar no localStorage
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      if (users.find(u => u.username === username)) {
-        setError('Usuário já existe.');
-        return;
-      }
-      users.push({ username, password });
-      localStorage.setItem('users', JSON.stringify(users));
+    try {
+      await api.post('/auth/register', { username, password });
       alert('Cadastro realizado com sucesso! Faça login.');
       navigate('/');
-    } else {
-      setError('Preencha todos os campos.');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Erro no cadastro.');
     }
   };
 

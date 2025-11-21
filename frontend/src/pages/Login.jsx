@@ -1,27 +1,25 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api.js';
+import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Verificar credenciais admin
-    if (username === 'cleanwork' && password === 'cleanwork7') {
-      // Login admin bem-sucedido, redirecionar para /home
+    try {
+      const res = await api.post('/auth/login', { username, password });
+      // backend retorna { token, role } — criar um objeto user consistente para o contexto
+      const userObj = { username, role: res.data.role };
+      login(userObj, res.data.token);
       navigate('/home');
-    } else {
-      // Verificar usuários cadastrados
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.username === username && u.password === password);
-      if (user) {
-        navigate('/home');
-      } else {
-        setError('Credenciais inválidas. Tente novamente.');
-      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Erro no login.');
     }
   };
 

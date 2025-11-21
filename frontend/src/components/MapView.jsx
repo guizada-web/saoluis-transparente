@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import api from "../services/api";
+import { useAuth } from "../contexts/AuthContext";
 
 // Fix for default markers in webpack
 delete L.Icon.Default.prototype._getIconUrl;
@@ -12,9 +13,28 @@ L.Icon.Default.mergeOptions({
 });
 
 export default function MapView() {
+  const { isAdmin } = useAuth();
   const mapRef = useRef(null);
   const [obras, setObras] = useState([]);
   const [demandas, setDemandas] = useState([]);
+
+  const deleteObra = async (id) => {
+    try {
+      await api.delete(`/obras/${id}`);
+      carregarObras();
+    } catch (error) {
+      console.error("Erro ao deletar obra:", error);
+    }
+  };
+
+  const deleteDemanda = async (id) => {
+    try {
+      await api.delete(`/demandas/${id}`);
+      carregarDemandas();
+    } catch (error) {
+      console.error("Erro ao deletar demanda:", error);
+    }
+  };
 
   const carregarObras = async () => {
     try {
@@ -38,6 +58,11 @@ export default function MapView() {
     carregarObras();
     carregarDemandas();
   }, []);
+
+  useEffect(() => {
+    window.deleteObra = deleteObra;
+    window.deleteDemanda = deleteDemanda;
+  }, [deleteObra, deleteDemanda]);
 
   useEffect(() => {
     if (mapRef.current) return; // já inicializado
@@ -122,6 +147,7 @@ export default function MapView() {
             ${obra.valor_estimado ? `<p style="margin: 0 0 4px 0; color: #6b7280; font-size: 12px;">Valor Estimado: R$ ${obra.valor_estimado.toLocaleString('pt-BR')}</p>` : ''}
             ${obra.data_inicio ? `<p style="margin: 0 0 4px 0; color: #6b7280; font-size: 12px;">Início: ${new Date(obra.data_inicio).toLocaleDateString('pt-BR')}</p>` : ''}
             ${obra.data_fim ? `<p style="margin: 0; color: #6b7280; font-size: 12px;">Fim Previsto: ${new Date(obra.data_fim).toLocaleDateString('pt-BR')}</p>` : ''}
+            ${isAdmin() ? `<button onclick="window.deleteObra(${obra.id})" style="margin-top: 8px; background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer;">Excluir</button>` : ''}
           </div>
         `;
 
