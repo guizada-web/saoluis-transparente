@@ -229,7 +229,7 @@ export default function Home() {
           {isAdmin() ? 'Painel de Controle' : 'Demandas Comunitárias e Mapa de Obras'}
         </h1>
 
-        {/* Se for admin, mostrar resumo de monitoramento com cartões */}
+        {/* Se for admin, mostrar resumo de monitoramento com cartões e tabela de solicitações */}
         {isAdmin() ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '1.5rem' }}>
             <div style={{ width: '100%', maxWidth: 1100, background: 'var(--card-bg)', padding: 20, borderRadius: 12, boxShadow: '0 12px 30px rgba(0,0,0,0.06)' }}>
@@ -237,38 +237,37 @@ export default function Home() {
               <div style={{ color: 'var(--muted)', marginBottom: 16 }}>Acompanhe o andamento de todas as obras em tempo real</div>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 12 }}>
-                  <div style={{ display: 'flex', background: '#fff', padding: 16, borderRadius: 8, boxShadow: '0 8px 20px rgba(2,6,23,0.04)', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 6, height: 48, borderRadius: 4, background: '#3b82f6' }} />
-                    <div>
-                      <div style={{ fontSize: 12, color: 'var(--muted)' }}>Total de Obras</div>
-                      <div style={{ fontSize: 20, fontWeight: 700 }}>{obras.length}</div>
-                    </div>
+                <div style={{ display: 'flex', background: '#fff', padding: 16, borderRadius: 8, boxShadow: '0 8px 20px rgba(2,6,23,0.04)', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 6, height: 48, borderRadius: 4, background: '#3b82f6' }} />
+                  <div>
+                    <div style={{ fontSize: 12, color: 'var(--muted)' }}>Total de Obras</div>
+                    <div style={{ fontSize: 20, fontWeight: 700 }}>{obras.length}</div>
                   </div>
-                  <div style={{ display: 'flex', background: '#fff', padding: 16, borderRadius: 8, boxShadow: '0 8px 20px rgba(2,6,23,0.04)', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 6, height: 48, borderRadius: 4, background: '#f97316' }} />
-                    <div>
-                      <div style={{ fontSize: 12, color: 'var(--muted)' }}>Em Andamento</div>
-                      <div style={{ fontSize: 20, fontWeight: 700 }}>{obras.filter(o => o.status === 'em_andamento').length}</div>
-                    </div>
+                </div>
+                <div style={{ display: 'flex', background: '#fff', padding: 16, borderRadius: 8, boxShadow: '0 8px 20px rgba(2,6,23,0.04)', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 6, height: 48, borderRadius: 4, background: '#f97316' }} />
+                  <div>
+                    <div style={{ fontSize: 12, color: 'var(--muted)' }}>Em Andamento</div>
+                    <div style={{ fontSize: 20, fontWeight: 700 }}>{obras.filter(o => o.status === 'em_andamento').length}</div>
                   </div>
-                  <div style={{ display: 'flex', background: '#fff', padding: 16, borderRadius: 8, boxShadow: '0 8px 20px rgba(2,6,23,0.04)', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 6, height: 48, borderRadius: 4, background: '#10b981' }} />
-                    <div>
-                      <div style={{ fontSize: 12, color: 'var(--muted)' }}>Concluídas</div>
-                      <div style={{ fontSize: 20, fontWeight: 700 }}>{obras.filter(o => o.status === 'concluida' || o.status === 'concluídas').length}</div>
-                    </div>
+                </div>
+                <div style={{ display: 'flex', background: '#fff', padding: 16, borderRadius: 8, boxShadow: '0 8px 20px rgba(2,6,23,0.04)', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 6, height: 48, borderRadius: 4, background: '#10b981' }} />
+                  <div>
+                    <div style={{ fontSize: 12, color: 'var(--muted)' }}>Concluídas</div>
+                    <div style={{ fontSize: 20, fontWeight: 700 }}>{obras.filter(o => o.status === 'concluida' || o.status === 'concluídas').length}</div>
                   </div>
-                  <div style={{ display: 'flex', background: '#fff', padding: 16, borderRadius: 8, boxShadow: '0 8px 20px rgba(2,6,23,0.04)', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 6, height: 48, borderRadius: 4, background: '#ef4444' }} />
-                    <div>
-                      <div style={{ fontSize: 12, color: 'var(--muted)' }}>Paradas</div>
-                      <div style={{ fontSize: 20, fontWeight: 700 }}>{obras.filter(o => o.status === 'parada' || o.status === 'cancelada' || o.status === 'paradas').length}</div>
-                    </div>
+                </div>
+                <div style={{ display: 'flex', background: '#fff', padding: 16, borderRadius: 8, boxShadow: '0 8px 20px rgba(2,6,23,0.04)', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 6, height: 48, borderRadius: 4, background: '#ef4444' }} />
+                  <div>
+                    <div style={{ fontSize: 12, color: 'var(--muted)' }}>Paradas</div>
+                    <div style={{ fontSize: 20, fontWeight: 700 }}>{obras.filter(o => o.status === 'parada' || o.status === 'cancelada' || o.status === 'paradas').length}</div>
                   </div>
                 </div>
               </div>
 
-              {/* Tabela de Solicitações de Novas Obras (apenas admin) */}
+              {/* Seção: Solicitações de Novas Obras */}
               <div style={{ marginTop: 18 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>Solicitações de Novas Obras</h3>
@@ -278,6 +277,7 @@ export default function Home() {
                     <button onClick={exportarCSVSolicitacoes} className="btn-primary" style={{ padding: '0.5rem 0.8rem' }}>Exportar Excel</button>
                   </div>
                 </div>
+
                 <div style={{ background: '#fff', padding: 12, borderRadius: 8, border: '1px solid #eef2f6' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
