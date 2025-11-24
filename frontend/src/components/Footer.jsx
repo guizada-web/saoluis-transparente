@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -37,6 +36,9 @@ export default function Footer() {
         </Link>
         <Link to="/obras" style={{ textDecoration: 'none', color: '#1f2937' }}>
           <div style={{ background: '#ffffff', padding: '10px 12px', borderRadius: 8, boxShadow: '0 6px 18px rgba(0,0,0,0.04)', textAlign: 'left' }}>Obras</div>
+        </Link>
+        <Link to="/estruturas" style={{ textDecoration: 'none', color: '#1f2937' }}>
+          <div style={{ background: '#ffffff', padding: '10px 12px', borderRadius: 8, boxShadow: '0 6px 18px rgba(0,0,0,0.04)', textAlign: 'left' }}>Estruturas Culturais</div>
         </Link>
         <Link to="/login" style={{ textDecoration: 'none', color: '#1f2937' }}>
           <div style={{ background: '#ffffff', padding: '10px 12px', borderRadius: 8, boxShadow: '0 6px 18px rgba(0,0,0,0.04)', textAlign: 'left' }}>Login/Cadastro</div>

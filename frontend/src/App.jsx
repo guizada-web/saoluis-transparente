@@ -1,13 +1,15 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
-import { ThemeProvider } from "./contexts/ThemeContext";
-import { AuthProvider } from "./contexts/AuthContext";
 import ThemeToggle from "./components/ThemeToggle";
-import Home from "./pages/Home";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import Dashboard from "./pages/Dashboard";
+import EstruturaDetail from "./pages/EstruturaDetail";
+import Estruturas from "./pages/Estruturas";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
 import Obras from "./pages/Obras";
+import Register from "./pages/Register";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/home" element={<Home />} />
               <Route path="/obras" element={<Obras />} />
+              <Route path="/estruturas" element={<Estruturas />} />
+              <Route path="/estruturas/:id" element={<EstruturaDetail />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/login" element={<Login />} />
               <Route path="*" element={<div>Página não encontrada</div>} />

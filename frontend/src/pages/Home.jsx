@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import MapView from "../components/MapView";
-import MiniMap from "../components/MiniMap";
+import MapSelector from "../components/MapSelector";
+import Navbar from "../components/Navbar";
 import { useAuth } from "../contexts/AuthContext";
+import api from "../services/api";
 
 export default function Home() {
   const { isAdmin } = useAuth();
@@ -15,6 +14,8 @@ export default function Home() {
   const [descricaoSolicitacao, setDescricaoSolicitacao] = useState("");
   const [lugarSolicitacao, setLugarSolicitacao] = useState("");
   const [dataSolicitacao, setDataSolicitacao] = useState("");
+  const [solicitacaoLatitude, setSolicitacaoLatitude] = useState(null);
+  const [solicitacaoLongitude, setSolicitacaoLongitude] = useState(null);
 
   // Dados de estados e cidades do Brasil com coordenadas aproximadas
   const estados = [
@@ -142,11 +143,11 @@ export default function Home() {
   };
 
   const exportarCSVSolicitacoes = () => {
-    const headers = ['N°','TÍTULO','BAIRRO','STATUS','PROGRESSO','INÍCIO','FIM','ATUALIZADO EM'];
+    const headers = ['N°','TÍTULO','BAIRRO','STATUS','PROGRESSO','INÍCIO','FIM','ATUALIZADO EM','LATITUDE','LONGITUDE'];
     const rows = demandas.map((d, i) => {
       const inicio = d.created_at ? new Date(d.created_at).toLocaleString() : '-';
       const atualizado = d.updated_at ? new Date(d.updated_at).toLocaleString() : '-';
-      return [i + 1, d.titulo || '', d.bairro || '', d.status || '', '-', inicio, '-', atualizado];
+      return [i + 1, d.titulo || '', d.bairro || '', d.status || '', '-', inicio, '-', atualizado, d.latitude || '', d.longitude || ''];
     });
     const csvContent = [headers, ...rows].map(r => r.map(c => `"${(''+c).replace(/"/g,'""') }"`).join(',')).join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -171,12 +172,16 @@ export default function Home() {
         descricao: `${descricaoSolicitacao}\nLocal: ${lugarSolicitacao}\nData sugerida: ${dataSolicitacao}`,
         bairro: lugarSolicitacao || '',
         cidade: '',
-        estado: ''
+        estado: '',
+        latitude: solicitacaoLatitude,
+        longitude: solicitacaoLongitude
       };
       await api.post('/demandas', payload);
       setDescricaoSolicitacao('');
       setLugarSolicitacao('');
       setDataSolicitacao('');
+      setSolicitacaoLatitude(null);
+      setSolicitacaoLongitude(null);
       alert('Solicitação enviada com sucesso. Obrigado!');
       carregarDemandas();
     } catch (err) {
@@ -325,37 +330,57 @@ export default function Home() {
           </div>
         ) : (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-            <div style={{ width: '100%', maxWidth: 720, background: 'var(--card-bg)', padding: '1.5rem', borderRadius: 12, boxShadow: '0 12px 30px rgba(0,0,0,0.08)' }}>
-              <h2 style={{ marginBottom: 12, fontWeight: 700, color: 'var(--text)' }}>Solicitação de Nova Obra</h2>
-              <p style={{ marginBottom: 16, color: 'var(--muted)' }}>Preencha a descrição, local e data pretendida. Essa solicitação será enviada para avaliação.</p>
-              <form onSubmit={criarSolicitacao} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <textarea
-                  placeholder="Descrição da solicitação"
-                  value={descricaoSolicitacao}
-                  onChange={(e) => setDescricaoSolicitacao(e.target.value)}
-                  required
-                  style={{ minHeight: 120, padding: 12, borderRadius: 8, border: '1px solid var(--border)', resize: 'vertical' }}
-                />
-                <input
-                  type="text"
-                  placeholder="Lugar (bairro / referência)"
-                  value={lugarSolicitacao}
-                  onChange={(e) => setLugarSolicitacao(e.target.value)}
-                  required
-                  style={{ padding: 12, borderRadius: 8, border: '1px solid var(--border)' }}
-                />
-                <input
-                  type="date"
-                  value={dataSolicitacao}
-                  onChange={(e) => setDataSolicitacao(e.target.value)}
-                  required
-                  style={{ padding: 12, borderRadius: 8, border: '1px solid var(--border)', maxWidth: 240 }}
-                />
-                <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
-                  <button type="submit" className="btn-primary" style={{ padding: '0.6rem 1rem' }}>Enviar Solicitação</button>
-                  <button type="button" onClick={() => { setDescricaoSolicitacao(''); setLugarSolicitacao(''); setDataSolicitacao(''); }} className="btn-secondary" style={{ padding: '0.6rem 1rem' }}>Limpar</button>
+            <div style={{ width: '100%', maxWidth: 1000, background: 'var(--card-bg)', padding: '1rem', borderRadius: 12, boxShadow: '0 12px 30px rgba(0,0,0,0.08)' }}>
+              <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                <div style={{ flex: '1 1 480px', minWidth: 320 }}>
+                  <h2 style={{ marginBottom: 12, fontWeight: 700, color: 'var(--text)' }}>Solicitação de Nova Obra</h2>
+                  <p style={{ marginBottom: 16, color: 'var(--muted)' }}>Preencha a descrição, local e data pretendida. Selecione um ponto no mapa para definir coordenadas (latitude/longitude).</p>
+                  <form onSubmit={criarSolicitacao} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    <textarea
+                      placeholder="Descrição da solicitação"
+                      value={descricaoSolicitacao}
+                      onChange={(e) => setDescricaoSolicitacao(e.target.value)}
+                      required
+                      style={{ minHeight: 120, padding: 12, borderRadius: 8, border: '1px solid var(--border)', resize: 'vertical' }}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Lugar (bairro / referência)"
+                      value={lugarSolicitacao}
+                      onChange={(e) => setLugarSolicitacao(e.target.value)}
+                      required
+                      style={{ padding: 12, borderRadius: 8, border: '1px solid var(--border)' }}
+                    />
+                    <input
+                      type="date"
+                      value={dataSolicitacao}
+                      onChange={(e) => setDataSolicitacao(e.target.value)}
+                      required
+                      style={{ padding: 12, borderRadius: 8, border: '1px solid var(--border)', maxWidth: 240 }}
+                    />
+
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <label style={{ fontSize: 12, color: 'var(--muted)' }}>Latitude</label>
+                        <input type="text" readOnly value={solicitacaoLatitude ?? ''} placeholder="Clique no mapa" style={{ padding: 8, borderRadius: 6, border: '1px solid var(--border)', minWidth: 160 }} />
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <label style={{ fontSize: 12, color: 'var(--muted)' }}>Longitude</label>
+                        <input type="text" readOnly value={solicitacaoLongitude ?? ''} placeholder="Clique no mapa" style={{ padding: 8, borderRadius: 6, border: '1px solid var(--border)', minWidth: 160 }} />
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+                      <button type="submit" className="btn-primary" style={{ padding: '0.6rem 1rem' }}>Enviar Solicitação</button>
+                      <button type="button" onClick={() => { setDescricaoSolicitacao(''); setLugarSolicitacao(''); setDataSolicitacao(''); setSolicitacaoLatitude(null); setSolicitacaoLongitude(null); }} className="btn-secondary" style={{ padding: '0.6rem 1rem' }}>Limpar</button>
+                    </div>
+                  </form>
                 </div>
-              </form>
+
+                <div style={{ width: 420, height: 360, borderRadius: 8, overflow: 'hidden', border: '1px solid var(--border)' }}>
+                  <MapSelector onSelect={({ lat, lng }) => { setSolicitacaoLatitude(lat); setSolicitacaoLongitude(lng); }} />
+                </div>
+              </div>
             </div>
           </div>
         )}
