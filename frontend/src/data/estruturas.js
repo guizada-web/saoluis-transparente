@@ -24,7 +24,7 @@ const estruturas = [
   {
     id: 'museu-historico',
     nome: 'Museu Histórico e Artístico do Maranhão',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/1/1e/Pal_acio_Dos_Leoes_-_Museu_Hist_rico.jpg',
+    imagem: '/estruturas culturais/museu-maranhao.jpg',
     local: 'Centro Histórico, São Luís - MA',
     ano: '1800',
     descricao: 'Museu que preserva coleções relacionadas à história, arte e memória maranhense.',
@@ -33,7 +33,7 @@ const estruturas = [
   {
     id: 'casa-do-maranhao',
     nome: 'Casa do Maranhão',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/1/11/Casa_do_Maranh%C3%A3o.jpg',
+    imagem: '/estruturas culturais/Casa do Maranhão.jpg',
     local: 'Centro Histórico, São Luís - MA',
     ano: '1900',
     descricao: 'Espaço de promoção das manifestações culturais maranhenses.',
@@ -42,7 +42,7 @@ const estruturas = [
   {
     id: 'igreja-do-carmo',
     nome: 'Igreja de Nossa Senhora do Carmo',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Igreja_do_Carmo_Sao_Luis.jpg',
+    imagem: '/estruturas culturais/igreja de nossa senhora.jpg',
     local: 'Centro Histórico, São Luís - MA',
     ano: '1700-1800',
     descricao: 'Igreja histórica com valor arquitetônico e importância nas manifestações religiosas locais.',
@@ -51,7 +51,7 @@ const estruturas = [
   {
     id: 'cais-das-tulhas',
     nome: 'Cais das Tulhas',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/2/27/Cais_das_Tulhas_Sao_Luis.jpg',
+    imagem: '/estruturas culturais/cais das tulhas.jpg',
     local: 'Beira-Mar, Porto, São Luís - MA',
     ano: '1800',
     descricao: 'Antigo mercado e área portuária que mantém tradição comercial e cultural ligada ao mar.',
@@ -60,7 +60,7 @@ const estruturas = [
   {
     id: 'teatro-joao-do-vale',
     nome: 'Teatro João do Vale',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/8/8d/Teatro_Joao_do_Vale.jpg',
+    imagem: '/estruturas culturais/teatro joão do vale.jpg',
     local: 'Bairro do Anil, São Luís - MA',
     ano: '1970',
     descricao: 'Espaço cultural voltado para a produção local e popular.',
@@ -69,7 +69,7 @@ const estruturas = [
   {
     id: 'casa-da-memoria',
     nome: 'Casa da Memória',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/5/5b/Casa_da_Memoria_Sao_Luis.jpg',
+    imagem: '/estruturas culturais/casa da memoria.jpg',
     local: 'Centro Histórico, São Luís - MA',
     ano: '1800',
     descricao: 'Espaço dedicado à preservação de documentos e memórias locais.',
@@ -79,7 +79,7 @@ const estruturas = [
   {
     id: 'mercado-central',
     nome: 'Mercado Central',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/4/4f/Mercado_Central_Sao_Luis.jpg',
+    imagem: '/estruturas culturais/mercado central.jpg',
     local: 'Rua da Paz, Centro, São Luís - MA',
     ano: '1900',
     descricao: 'Mercado tradicional que concentra comércio local, comidas típicas e artesanato.',
@@ -88,7 +88,7 @@ const estruturas = [
   {
     id: 'igreja-sao-francisco',
     nome: 'Igreja e Convento de São Francisco',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/8/8a/Igreja_Sao_Francisco_Sao_Luis.jpg',
+    imagem: '/estruturas culturais/igreja da Sé.jpg',
     local: 'Centro Histórico, São Luís - MA',
     ano: '1700',
     descricao: 'Complexo religioso com rica ornamentação barroca e azulejaria.',
@@ -97,7 +97,7 @@ const estruturas = [
   {
     id: 'convento-das-merces',
     nome: 'Convento das Mercês',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/2/29/Convento_das_Merces_Sao_Luis.jpg',
+    imagem: '/estruturas culturais/merces.jpg',
     local: 'Praça Dom Pedro II, Centro Histórico, São Luís - MA',
     ano: '1600-1700',
     descricao: 'Edifício religioso histórico que integra o conjunto do centro histórico.',
@@ -106,7 +106,7 @@ const estruturas = [
   {
     id: 'praca-goncalves-dias',
     nome: 'Praça Gonçalves Dias',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Praca_Goncalves_Dias_Sao_Luis.jpg',
+    imagem: '/estruturas culturais/Praça Gonçalves Dias.jpg',
     local: 'Centro Histórico, São Luís - MA',
     ano: '1800',
     descricao: 'Praça histórica que serve de espaço público para manifestações culturais e eventos.',
@@ -115,7 +115,7 @@ const estruturas = [
   {
     id: 'solar-do-ribeira',
     nome: 'Solar do Ribeira',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/3/3d/Solar_do_Ribeira_Sao_Luis.jpg',
+    imagem: '/estruturas culturais/solar.jpg',
     local: 'Bairro do Ribeira, São Luís - MA',
     ano: '1800',
     descricao: 'Solar histórico representativo da arquitetura residencial antiga da cidade.',
