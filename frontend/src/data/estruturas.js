@@ -6,7 +6,7 @@ const estruturas = [
   {
     id: 'teatro-arthur-azevedo',
     nome: 'Teatro Artur Azevedo',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/3/33/Teatro_Arthur_Azevedo_%28S%C3%A3o_Lu%C3%ADs%29.jpg',
+    imagem: '/estruturas culturais/Teatro Artur Azevedo.jpg',
     local: 'Centro Histórico, São Luís - MA',
     ano: '1893',
     descricao: 'Um dos mais antigos e emblemáticos espaços de artes cênicas da cidade.',
@@ -15,7 +15,7 @@ const estruturas = [
   {
     id: 'palacio-dos-leoes',
     nome: 'Palácio dos Leões',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/Pal%C3%A1cio_Dos_Le%C3%B5es_%28Maranh%C3%A3o%29.jpg',
+    imagem: '/estruturas culturais/Palácio dos Leões [São Luís, Maranhão].jpg',
     local: 'Praça Pedro II, Centro, São Luís - MA',
     ano: '1800',
     descricao: 'Sede histórica do governo estadual e marco arquitetônico da capital.',
