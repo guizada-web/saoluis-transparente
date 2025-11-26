@@ -3,6 +3,7 @@ import L from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import api from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
+import estruturas from "../data/estruturas";
 
 // Fix for default markers in webpack
 delete L.Icon.Default.prototype._getIconUrl;
@@ -128,7 +129,21 @@ export default function MapView() {
       iconAnchor: [12, 24]
     });
 
-    // Adicionar marcadores das obras
+    const demandaConfirmadaIcon = L.divIcon({
+      className: 'custom-demanda-confirmada-marker',
+      html: '<div style="width: 24px; height: 24px; background: #3b82f6; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+      iconSize: [24, 24],
+      iconAnchor: [12, 24]
+    });
+
+    const estruturaIcon = L.divIcon({
+      className: 'custom-estrutura-marker',
+      html: '<div style="width: 20px; height: 20px; background: #10b981; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.25);"></div>',
+      iconSize: [20, 20],
+      iconAnchor: [10, 10]
+    });
+
+  // Adicionar marcadores das obras
     obras.forEach((obra) => {
       if (obra.latitude && obra.longitude) {
         const marker = L.marker([obra.latitude, obra.longitude], { icon: obraIcon }).addTo(mapRef.current);
@@ -155,10 +170,28 @@ export default function MapView() {
       }
     });
 
+    // Adicionar marcadores das estruturas culturais (dados estáticos)
+    estruturas.forEach((e) => {
+      if (e.latitude && e.longitude) {
+        const marker = L.marker([e.latitude, e.longitude], { icon: estruturaIcon }).addTo(mapRef.current);
+
+        const popupContent = `
+          <div style="font-family: Arial, sans-serif; max-width: 240px;">
+            <h3 style="margin: 0 0 8px 0; color: #064e3b; font-size: 15px;">🎭 ${e.nome}</h3>
+            <p style="margin: 0 0 6px 0; color: #6b7280; font-size: 13px;">${e.local}</p>
+            <p style="margin: 0; color: #6b7280; font-size: 13px;">${e.descricao}</p>
+          </div>
+        `;
+
+        marker.bindPopup(popupContent);
+      }
+    });
+
     // Adicionar marcadores das demandas
     demandas.forEach((demanda) => {
       if (demanda.latitude && demanda.longitude) {
-        const marker = L.marker([demanda.latitude, demanda.longitude], { icon: demandaIcon }).addTo(mapRef.current);
+        const iconToUse = (demanda.status === 'confirmada' || demanda.status === 'confirmado') ? demandaConfirmadaIcon : demandaIcon;
+        const marker = L.marker([demanda.latitude, demanda.longitude], { icon: iconToUse }).addTo(mapRef.current);
 
         const popupContent = `
           <div style="font-family: Arial, sans-serif; max-width: 250px;">
@@ -195,11 +228,15 @@ export default function MapView() {
         zIndex: 1000
       }}>
         <strong>Obras Públicas e Demandas</strong><br/>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "4px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "4px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
             <div style={{ width: "12px", height: "12px", background: "#3b82f6", borderRadius: "50% 50% 50% 0", transform: "rotate(-45deg)" }}></div>
             <span>Obras: {obras.length}</span>
           </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <div style={{ width: "12px", height: "12px", background: "#10b981", borderRadius: "50%" }}></div>
+              <span>Estruturas: {estruturas.length}</span>
+            </div>
           <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
             <div style={{ width: "12px", height: "12px", background: "#ef4444", borderRadius: "50% 50% 50% 0", transform: "rotate(-45deg)" }}></div>
             <span>Demandas: {demandas.length}</span>

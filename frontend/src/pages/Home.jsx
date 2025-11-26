@@ -295,12 +295,13 @@ export default function Home() {
                         <th style={{ padding: 12, borderBottom: '1px solid #eef2f6', textAlign: 'left' }}>INÍCIO</th>
                         <th style={{ padding: 12, borderBottom: '1px solid #eef2f6', textAlign: 'left' }}>FIM</th>
                         <th style={{ padding: 12, borderBottom: '1px solid #eef2f6', textAlign: 'left' }}>ATUALIZADO EM</th>
+                        <th style={{ padding: 12, borderBottom: '1px solid #eef2f6', textAlign: 'left' }}>AÇÕES</th>
                       </tr>
                     </thead>
                     <tbody>
                       {demandas.length === 0 ? (
                         <tr>
-                          <td colSpan={8} style={{ padding: 48, textAlign: 'center', color: '#9ca3af' }}>
+                          <td colSpan={9} style={{ padding: 48, textAlign: 'center', color: '#9ca3af' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
                               <div style={{ width: 44, height: 44, borderRadius: 44, background: '#eef2f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🔍</div>
                               <div style={{ fontWeight: 700 }}>Nenhuma solicitação encontrada</div>
@@ -319,6 +320,18 @@ export default function Home() {
                             <td style={{ padding: 12, borderBottom: '1px solid #f1f5f9' }}>{d.created_at ? new Date(d.created_at).toLocaleDateString() : '-'}</td>
                             <td style={{ padding: 12, borderBottom: '1px solid #f1f5f9' }}>-</td>
                             <td style={{ padding: 12, borderBottom: '1px solid #f1f5f9' }}>{d.updated_at ? new Date(d.updated_at).toLocaleDateString() : '-'}</td>
+                            <td style={{ padding: 12, borderBottom: '1px solid #f1f5f9' }}>
+                              {isAdmin && isAdmin() ? (
+                                <div style={{ display: 'flex', gap: 8 }}>
+                                  {d.status === 'pendente' ? (
+                                    <button onClick={async () => { try { await api.put(`/demandas/${d.id}`, { status: 'confirmada' }); carregarDemandas(); } catch (err) { console.error('Erro ao confirmar demanda:', err); alert('Erro ao confirmar demanda'); } }} className="btn-primary" style={{ padding: '0.4rem 0.6rem' }}>Verificar / Confirmar</button>
+                                  ) : d.status === 'confirmada' || d.status === 'confirmado' ? (
+                                    <div style={{ padding: '0.4rem 0.6rem', background: '#3b82f6', color: 'white', borderRadius: 6, fontSize: 13 }}>Confirmada</div>
+                                  ) : null}
+                                  <button onClick={async () => { if (confirm('Deseja deletar esta demanda?')) { try { await api.delete(`/demandas/${d.id}`); carregarDemandas(); } catch (err) { console.error('Erro ao deletar demanda:', err); alert('Erro ao deletar demanda'); } } }} className="btn-ghost" style={{ padding: '0.4rem 0.6rem' }}>Excluir</button>
+                                </div>
+                              ) : null}
+                            </td>
                           </tr>
                         ))
                       )}
