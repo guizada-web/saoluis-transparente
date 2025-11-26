@@ -10,7 +10,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
 
-export default function MapSelector({ onSelect }) {
+export default function MapSelector({ onSelect, focusPoint }) {
   const mapRef = useRef(null);
   const markerRef = useRef(null);
   const [center] = useState([-2.5307, -44.3068]); // São Luís como centro aproximado
@@ -46,6 +46,24 @@ export default function MapSelector({ onSelect }) {
       mapRef.current = null;
     };
   }, [center, onSelect]);
+
+  useEffect(() => {
+    if (!mapRef.current || !focusPoint) return;
+    const { lat, lng } = focusPoint;
+    mapRef.current.setView([lat, lng], Math.max(mapRef.current.getZoom(), 14), {
+      animate: true
+    });
+
+    if (markerRef.current) {
+      markerRef.current.setLatLng([lat, lng]);
+    } else {
+      markerRef.current = L.marker([lat, lng]).addTo(mapRef.current);
+    }
+
+    if (typeof onSelect === "function") {
+      onSelect({ lat: Number(lat.toFixed(6)), lng: Number(lng.toFixed(6)) });
+    }
+  }, [focusPoint, onSelect]);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>

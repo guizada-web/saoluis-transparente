@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import demandaRoutes from "./routes/demandaRoutes.js";
 import obraRoutes from "./routes/obraRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import estruturaRoutes from "./routes/estruturaRoutes.js";
 import { supabase } from "./config/db.js";
 
 dotenv.config();
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use("/api/demandas", demandaRoutes);
 app.use("/api/obras", obraRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/estruturas", estruturaRoutes);
 
 // Rotas de exemplo
 app.get("/", (req, res) => {

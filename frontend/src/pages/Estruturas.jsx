@@ -1,9 +1,34 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import estruturas from "../data/estruturas";
+import api from "../services/api";
+import estruturasFallback from "../data/estruturas";
 
 export default function Estruturas() {
+  const [estruturas, setEstruturas] = useState(estruturasFallback);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const res = await api.get("/estruturas");
+        if (active && Array.isArray(res.data) && res.data.length > 0) {
+          setEstruturas(res.data);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar estruturas culturais:", error);
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <div className="app-container">
       <Navbar />
@@ -12,22 +37,29 @@ export default function Estruturas() {
           <h1 style={{ textAlign: 'center', fontSize: '2rem', marginBottom: 12 }}>Estruturas Culturais de São Luís</h1>
           <p style={{ color: 'var(--muted)', textAlign: 'center', marginBottom: 24 }}>Lista organizada de espaços culturais com imagem, local, ano de criação e um resumo. Clique em "Ver mais" para a página completa da estrutura.</p>
 
+          {loading && (
+            <div style={{ textAlign: 'center', padding: '1rem', color: 'var(--muted)' }}>Carregando estruturas...</div>
+          )}
+
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
-            {estruturas.map((e) => (
-              <div key={e.id} style={{ background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: 8, overflow: 'hidden' }}>
-                <div style={{ height: 160, overflow: 'hidden' }}>
-                  <img src={e.imagem} alt={e.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-                <div style={{ padding: 12 }}>
-                  <h3 style={{ margin: '4px 0 8px 0' }}>{e.nome}</h3>
-                  <div style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 8 }}>{e.local} • {e.ano}</div>
-                  <p style={{ margin: 0, color: 'var(--text)', minHeight: 44 }}>{e.descricao}</p>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 12 }}>
-                    <Link to={`/estruturas/${e.id}`} className="btn-primary" style={{ padding: '0.4rem 0.8rem', textDecoration: 'none' }}>Ver mais</Link>
+            {estruturas.map((e) => {
+              const identifier = e.slug || e.id;
+              return (
+                <div key={identifier} style={{ background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: 8, overflow: 'hidden' }}>
+                  <div style={{ height: 160, overflow: 'hidden' }}>
+                    <img src={e.imagem} alt={e.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                  <div style={{ padding: 12 }}>
+                    <h3 style={{ margin: '4px 0 8px 0' }}>{e.nome}</h3>
+                    <div style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 8 }}>{e.local} • {e.ano}</div>
+                    <p style={{ margin: 0, color: 'var(--text)', minHeight: 44 }}>{e.descricao}</p>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 12 }}>
+                      <Link to={`/estruturas/${identifier}`} className="btn-primary" style={{ padding: '0.4rem 0.8rem', textDecoration: 'none' }}>Ver mais</Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </main>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Footer from "../components/Footer";
 import MapSelector from "../components/MapSelector";
 import Navbar from "../components/Navbar";
@@ -16,6 +16,9 @@ export default function Home() {
   const [dataSolicitacao, setDataSolicitacao] = useState("");
   const [solicitacaoLatitude, setSolicitacaoLatitude] = useState(null);
   const [solicitacaoLongitude, setSolicitacaoLongitude] = useState(null);
+  const [mapFocus, setMapFocus] = useState(null);
+  const [geocodeStatus, setGeocodeStatus] = useState("idle");
+  const lastGeocodeValue = useRef("");
 
   // Dados de estados e cidades do Brasil com coordenadas aproximadas
   const estados = [
@@ -220,6 +223,59 @@ export default function Home() {
     return () => { if (intervalId) clearInterval(intervalId); };
   }, []);
 
+  useEffect(() => {
+    const query = lugarSolicitacao.trim();
+    if (query.length < 3) {
+      if (!query) {
+        setGeocodeStatus("idle");
+      }
+      return undefined;
+    }
+
+    const normalizedQuery = query.toLowerCase();
+    if (normalizedQuery === lastGeocodeValue.current) {
+      return undefined;
+    }
+
+    const controller = new AbortController();
+    setGeocodeStatus("loading");
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=br&q=${encodeURIComponent(`${query}, São Luís, Maranhão, Brasil`)}`;
+        const response = await fetch(url, {
+          signal: controller.signal,
+          headers: {
+            Accept: "application/json",
+          },
+        });
+        if (!response.ok) throw new Error("Falha ao buscar localização");
+        const data = await response.json();
+        if (Array.isArray(data) && data.length > 0) {
+          const lat = parseFloat(data[0].lat);
+          const lng = parseFloat(data[0].lon);
+          setMapFocus({ lat, lng });
+          setSolicitacaoLatitude(lat);
+          setSolicitacaoLongitude(lng);
+          setGeocodeStatus("done");
+          lastGeocodeValue.current = normalizedQuery;
+        } else {
+          setGeocodeStatus("not_found");
+        }
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error("Erro ao localizar bairro:", error);
+          setGeocodeStatus("error");
+        }
+      }
+    }, 700);
+
+    return () => {
+      controller.abort();
+      clearTimeout(timeoutId);
+    };
+  }, [lugarSolicitacao]);
+
   return (
     <div className="app-container">
       <Navbar />
@@ -364,6 +420,14 @@ export default function Home() {
                       required
                       style={{ padding: 12, borderRadius: 8, border: '1px solid var(--border)' }}
                     />
+                    {lugarSolicitacao && (
+                      <small style={{ color: geocodeStatus === 'not_found' || geocodeStatus === 'error' ? '#ef4444' : '#6b7280' }}>
+                        {geocodeStatus === 'loading' && 'Localizando bairro no mapa...'}
+                        {geocodeStatus === 'done' && 'Coordenadas preenchidas automaticamente.'}
+                        {geocodeStatus === 'not_found' && 'Não encontramos esse bairro. Clique no mapa para selecionar manualmente.'}
+                        {geocodeStatus === 'error' && 'Erro ao buscar a localização. Tente novamente ou selecione direto no mapa.'}
+                      </small>
+                    )}
                     <input
                       type="date"
                       value={dataSolicitacao}
@@ -391,7 +455,14 @@ export default function Home() {
                 </div>
 
                 <div style={{ width: 420, height: 360, borderRadius: 8, overflow: 'hidden', border: '1px solid var(--border)' }}>
-                  <MapSelector onSelect={({ lat, lng }) => { setSolicitacaoLatitude(lat); setSolicitacaoLongitude(lng); }} />
+                  <MapSelector
+                    focusPoint={mapFocus}
+                    onSelect={({ lat, lng }) => {
+                      setSolicitacaoLatitude(lat);
+                      setSolicitacaoLongitude(lng);
+                      setMapFocus({ lat, lng });
+                    }}
+                  />
                 </div>
               </div>
             </div>

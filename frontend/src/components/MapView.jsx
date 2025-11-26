@@ -3,7 +3,7 @@ import L from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import api from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
-import estruturas from "../data/estruturas";
+import estruturasFallback from "../data/estruturas";
 
 // Fix for default markers in webpack
 delete L.Icon.Default.prototype._getIconUrl;
@@ -18,6 +18,7 @@ export default function MapView() {
   const mapRef = useRef(null);
   const [obras, setObras] = useState([]);
   const [demandas, setDemandas] = useState([]);
+  const [estruturas, setEstruturas] = useState(estruturasFallback);
 
   const deleteObra = async (id) => {
     try {
@@ -55,9 +56,21 @@ export default function MapView() {
     }
   };
 
+  const carregarEstruturas = async () => {
+    try {
+      const res = await api.get("/estruturas");
+      if (Array.isArray(res.data) && res.data.length > 0) {
+        setEstruturas(res.data);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar estruturas culturais:", error);
+    }
+  };
+
   useEffect(() => {
     carregarObras();
     carregarDemandas();
+    carregarEstruturas();
   }, []);
 
   useEffect(() => {
@@ -87,7 +100,7 @@ export default function MapView() {
   }, []);
 
   useEffect(() => {
-    if (!mapRef.current || (obras.length === 0 && demandas.length === 0)) return;
+    if (!mapRef.current) return;
 
     // Limpar marcadores existentes
     mapRef.current.eachLayer((layer) => {
@@ -170,7 +183,7 @@ export default function MapView() {
       }
     });
 
-    // Adicionar marcadores das estruturas culturais (dados estáticos)
+    // Adicionar marcadores das estruturas culturais
     estruturas.forEach((e) => {
       if (e.latitude && e.longitude) {
         const marker = L.marker([e.latitude, e.longitude], { icon: estruturaIcon }).addTo(mapRef.current);
@@ -210,7 +223,7 @@ export default function MapView() {
         marker.bindPopup(popupContent);
       }
     });
-  }, [obras, demandas]);
+  }, [obras, demandas, estruturas]);
 
   return (
     <div style={{ position: "relative", height: "100%", width: "100%" }}>

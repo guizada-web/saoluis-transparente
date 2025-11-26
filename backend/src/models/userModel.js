@@ -1,10 +1,13 @@
 import { supabase } from '../config/db.js';
 
 export const getUserByUsername = async (username) => {
+  const sanitizedUsername = (username ?? '').trim();
+  if (!sanitizedUsername) return null;
+
   const { data, error } = await supabase
     .from('users')
     .select('*')
-    .eq('username', username)
+    .ilike('username', sanitizedUsername)
     .single();
 
   if (error && error.code !== 'PGRST116') throw error;
@@ -12,9 +15,12 @@ export const getUserByUsername = async (username) => {
 };
 
 export const createUser = async (username, password, role = 'user') => {
+  const sanitizedUsername = (username ?? '').trim();
+  if (!sanitizedUsername) throw new Error('Nome de usuário obrigatório');
+
   const { data, error } = await supabase
     .from('users')
-    .insert({ username, password, role })
+    .insert({ username: sanitizedUsername, password, role })
     .select()
     .single();
 

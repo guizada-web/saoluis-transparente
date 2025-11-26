@@ -24,10 +24,27 @@ Funcionalidades principais:
 
 ## Configuração do backend
 
-1. Copie o arquivo de exemplo de variáveis de ambiente (se houver) ou crie `.env` na pasta `backend` com as seguintes variáveis:
+1. Crie um arquivo `.env` dentro de `backend/` com as variáveis abaixo (a **service role key** do Supabase só pode ser usada no servidor; nunca exponha esse valor no frontend):
 
 ```
-DB_USER=seu_usuario
+SUPABASE_URL=https://<id-do-seu-projeto>.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
+JWT_SECRET=<chave forte à sua escolha>
+PORT=5000
+```
+
+> ⚠️ **Importante:** não use a chave `anon` no backend, porque as policies das tabelas (`users`, `obras`, `demandas`, `estruturas_culturais`) permitem acesso apenas para a role `service_role`. Sem a service role key, o login retornará “Usuário não encontrado”.
+
+2. Instale dependências e inicie o servidor (PowerShell):
+
+```powershell
+cd backend
+npm install
+npm run dev    # usa nodemon; ou npm start
+```
+
+3. Se ainda não tiver rodado as migrações, execute o script SQL (`backend/create-tables.sql`) no Supabase SQL Editor ou utilize o script `node backend/create-tables.js` após configurar o `.env`. Depois rode `node backend/scripts/upsert-admin.js` para garantir o admin padrão `cleanwork7 / cleanwork777`.
+
 # 🌆 CleanWork
 
 Aplicativo web para transparência e participação comunitária em São Luís — visualize obras públicas no mapa, submeta demandas e acompanhe informações relevantes.
@@ -60,16 +77,7 @@ Funcionalidades principais:
 
 ## 🛠️ Configuração do backend
 
-1. Crie um arquivo `.env` dentro de `backend/` com as variáveis:
-
-```env
-DB_USER=seu_usuario
-DB_HOST=localhost
-DB_NAME=seu_banco
-DB_PASS=sua_senha
-DB_PORT=5432
-PORT=5000
-```
+1. Garanta que o `.env` esteja preenchido conforme descrito na seção superior.
 
 2. Instale dependências e inicie o servidor (PowerShell):
 
@@ -79,23 +87,16 @@ npm install
 npm run dev    # usa nodemon; ou npm start
 ```
 
-> ❗ Observação: o projeto NÃO cria automaticamente as tabelas no banco (o script de init foi removido). Crie a tabela `demandas` manualmente ou use sua ferramenta de migração favorita.
+3. Para popular dados iniciais, utilize:
 
-Exemplo SQL para criar a tabela `demandas`:
-
-```sql
-CREATE TABLE demandas (
-  id SERIAL PRIMARY KEY,
-  titulo TEXT NOT NULL,
-  descricao TEXT NOT NULL,
-  bairro TEXT,
-  latitude DOUBLE PRECISION,
-  longitude DOUBLE PRECISION,
-  usuario_id INTEGER,
-  status TEXT DEFAULT 'aberta',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+```powershell
+node backend/create-tables.js        # cria as tabelas via Supabase RPC
+node backend/scripts/upsert-admin.js # garante o usuário admin cleanwork7
+node backend/populate-estruturas.js  # opcional
+node backend/populate-obras.js       # opcional
 ```
+
+> ❗ Caso não queira usar o RPC `exec_sql`, copie o conteúdo de `create-tables.sql` para o SQL Editor do Supabase e execute por lá.
 
 ---
 

@@ -7,7 +7,15 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 export const login = async (req, res) => {
   const { username, password } = req.body;
   try {
+    console.log('[AUTH] Tentativa de login:', { rawUsername: username });
+
     const user = await getUserByUsername(username);
+    console.log('[AUTH] Resultado getUserByUsername:', {
+      found: !!user,
+      usernameDB: user?.username,
+      role: user?.role,
+    });
+
     if (!user) return res.status(400).json({ message: 'Usuário não encontrado' });
 
     const isMatch = await bcrypt.compare(password, user.password);
